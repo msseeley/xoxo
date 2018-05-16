@@ -1,34 +1,41 @@
-import { Map } from 'immutable';
+import { Map } from "immutable";
 
-const MOVE = 'MOVE';
-const TURN = 'TURN';
-const POSITION = 'POSITION';
+const MOVE = "MOVE";
+const WINNER = "WINNER";
 
-// export const turn = turn => ({ type: MOVE, turn });
-// export const position = position => ({ type: MOVE, position });
 export const move = (turn, position) => ({ type: MOVE, turn, position });
+export const gameWinner = winner => ({ type: GAMEWINNER, winner });
 
-const initialState = {
-  turn: 'X',
-  board: Map()
-};
-
-export function turnReducer(turn = 'X', action) {
-  if (action.type === MOVE) return turn === 'X' ? 'O' : 'X';
+export function turnReducer(turn = "X", action) {
+  if (action.type === MOVE) return turn === "X" ? "O" : "X";
   return turn;
 }
 
 export function boardReducer(board = Map(), action) {
-  if (action.type === MOVE) return board.setIn(action.coord, action.player);
+  if (action.type === MOVE) return board.setIn(action.position, action.turn);
   return board;
 }
 
-export default function reducer(state = initialState, action) {
+export function winnerReducer(winner = null, action) {
+  if (action.type === GAMEWINNER) return winner ? action.winner : null;
+  return winner;
+}
+
+export default function reducer(state = {}, action) {
   return {
     board: boardReducer(state.board, action),
-    turn: turnReducer(state.turn, action)
+    turn: turnReducer(state.turn, action),
+    winner: winnerReducer(state.winner, winner, action)
   };
 }
+
+/*state{
+  board
+  turn
+  winner: null
+}
+
+*/
 
 // export default function reducer(state = initialState, action) {
 //   let newState = Object.assign({}, state);
